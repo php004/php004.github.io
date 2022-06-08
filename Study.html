@@ -237,7 +237,7 @@
           var hola = tasquesguardades.split(',');
           if (hola != null && hola!=""){
           hola.forEach(element => {
-            if (element!='' && element!='null'){
+            if (element!='' && element!=null){
               var llistatasques = document.getElementById("llistadetasques");
               llistatasques.innerHTML += '<p><input type="checkbox" class="form-check-input">' + element + ' </input></p>';
             }
