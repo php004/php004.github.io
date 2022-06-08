@@ -232,18 +232,18 @@
       })
 
       window.onload = function(){
-        console.log("aa")
         var tasquesguardades = sessionStorage.getItem("tasques")
-        var hola = tasquesguardades.split(',');
-        console.log(hola);
-        if (hola != ""){
-        hola.forEach(element => {
-          if (element!=''){
-            var llistatasques = document.getElementById("llistadetasques");
-            llistatasques.innerHTML += '<p><input type="checkbox" class="form-check-input">' + element + ' </input></p>';
+        if (tasquesguardades!=""){
+          var hola = tasquesguardades.split(',');
+          if (hola != ""){
+          hola.forEach(element => {
+            if (element!=''){
+              var llistatasques = document.getElementById("llistadetasques");
+              llistatasques.innerHTML += '<p><input type="checkbox" class="form-check-input">' + element + ' </input></p>';
+            }
+          });
           }
-        });}
-       
+        }
       }
 
 
