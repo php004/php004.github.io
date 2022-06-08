@@ -233,10 +233,9 @@
 
       window.onload = function(){
         var tasquesguardades = sessionStorage.getItem("tasques")
-        console.log(tasquesguardades);
-        if (tasquesguardades!=""){
+        if (tasquesguardades!='null'){
           var hola = tasquesguardades.split(',');
-          if (hola != ""){
+          if (hola != null && hola!=""){
           hola.forEach(element => {
             if (element!=''){
               var llistatasques = document.getElementById("llistadetasques");
