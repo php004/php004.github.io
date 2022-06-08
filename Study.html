@@ -233,7 +233,7 @@
 
       window.onload = function(){
         var tasquesguardades = sessionStorage.getItem("tasques")
-        if (tasquesguardades!='null'){
+        if (tasquesguardades!=''){
           var hola = tasquesguardades.split(',');
           if (hola != null && hola!=""){
           hola.forEach(element => {
