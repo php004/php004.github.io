@@ -233,6 +233,7 @@
 
       window.onload = function(){
         var tasquesguardades = sessionStorage.getItem("tasques")
+        console.log(tasquesguardades);
         if (tasquesguardades!=""){
           var hola = tasquesguardades.split(',');
           if (hola != ""){
