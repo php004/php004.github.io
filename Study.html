@@ -215,6 +215,9 @@
         if (quetocafer!=0){
         var llistatasques = document.getElementById("llistadetasques");
         llistatasques.innerHTML += '<p><input type="checkbox" class="form-check-input">' + quetocafer + ' </input></p>';
+        var guardatasques = localStorage.getItem("tasques");
+        guardatasques += ',' + quetocafer;
+        localStorage.setItem("tasques", guardatasques);
         }
 
         tasca.value = "";
@@ -224,8 +227,24 @@
       ntasca.addEventListener('click', function(){
 
         var llistatasques = document.getElementById("llistadetasques");
-        llistatasques.innerHTML = ""
+        llistatasques.innerHTML = "";
+        localStorage.setItem("tasques", "");
       })
+
+      window.onload = function(){
+        console.log("aa")
+        var tasquesguardades = localStorage.getItem("tasques")
+        var hola = tasquesguardades.split(',');
+        console.log(hola);
+        if (hola != ""){
+        hola.forEach(element => {
+          if (element!=''){
+            var llistatasques = document.getElementById("llistadetasques");
+            llistatasques.innerHTML += '<p><input type="checkbox" class="form-check-input">' + element + ' </input></p>';
+          }
+        });}
+       
+      }
 
 
     </script>
