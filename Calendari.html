@@ -24,6 +24,9 @@
 
         background-color: rgb(235, 235, 235);
       }
+      .anyet{
+        font-weight: lighter;
+      }
  
     </style>
   </head>
@@ -215,9 +218,31 @@
         
 
     </div>
+    <div class="row m-3 pb-3 align-items-center text-center">
+      <div class="col text-center align-self-center anyet" id="any">
+        2022
+      </div>
+    </div>
 </div>
     <!-- Fi Calendari -->
 
+    <div class="row">
+      <div class="col m-3 align-self-center text-center">
+        <button type="button" class="btn btn-danger" id="borrarevents">Borra tots els events</button>
+      </div>
+    </div>
+      
+<div class="row">
+  <div class="col m-3 align-self-center text-center" id="eventsclic">
+    Els teus events:
+  </div>
+  
+</div>
+<div class="row">
+  <div class="col m-2 align-self-center text-center" id="eventos">
+    aaa
+  </div>
+</div>
 
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -288,7 +313,17 @@
             var mcodel = [0, 3, 3, 6,  1, 4, 6, 2, 5, 0, 3, 5];
             var mcode = mcodel[now[1]-1];
             var total = (ycode + mcode + 6 + 1)%7;
+
+            if(dos%4==0 && (now[1]==1 || now[1]==2)){
+              if (total == 0){
+                total = 6;
+              }
+              else{
+              total = total - 1;}
+            }
+
             var d = total;
+            window.totaldeldiadavui = d
             if (d==0){
                 d = 7;
             }
@@ -298,6 +333,7 @@
                 var el = document.getElementById(q)
                 el.innerHTML = "";
                 el.style.backgroundColor = "";
+                el.style.background = "";
                 e = e + 1
             }
             while (i<dies+1){
@@ -312,7 +348,7 @@
             var avui = new Date();
             avui = avui.toLocaleDateString()
             avui = avui.split("/");
-            if (avui[1] == now[1]){
+            if (avui[1] == now[1] && avui[2] == now[2]){
                 var actual = document.getElementById("c"+(e).toString());
                 actual.style.backgroundColor = "white";
                 actual.style.borderRadius= "10px";
@@ -321,22 +357,36 @@
             var nom = document.getElementById("nom")
             var llistamesos = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"]
             nom.innerHTML = llistamesos[now[1]-1];
+            var anyet = document.getElementById("any")
+            anyet.innerHTML = now[2]
 
         }
         mes();
 
         var d = document.getElementById("seguent")
         d.addEventListener('click', function(){
-            now[1] = parseInt(now[1]) + 1;
+          if (now[1]<12){
+            now[1] = parseInt(now[1]) + 1;}
+          else{
+            now[1] = 1
+            now[2] = parseInt(now[2]) + 1;
+          }
             console.log(now[1])
             mes();
+            carregaEvents();
         });
 
         var e = document.getElementById("anterior")
         e.addEventListener('click', function(){
-            now[1] = parseInt(now[1]) -1;
+          if(now[1]>1){
+            now[1] = parseInt(now[1]) -1;}
+          else{
+            now[2] = parseInt(now[2]) -1;
+            now[1] = 12;
+          }
             console.log(now[1])
             mes();
+            carregaEvents();
         })
 
        
@@ -365,10 +415,18 @@
           var horafinal = document.getElementById("horarif").value
           var desc = document.getElementById("descripcio").value
           var dia = document.getElementById("diaa").textContent
+          var any = document.getElementById("any").textContent
+
+          var mes = document.getElementById("nom").textContent
+          var llistamesos = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"]
+          
+          var dmes = llistamesos.indexOf(mes)
+
+
           dia = dia.replace("Dia ", '')
 
           if (tito!=""){
-          var llista = [dia, tito, horainici, horafinal, desc, color]
+          var llista = [dia, dmes, any, tito, horainici, horafinal, desc, color]
 
 
           if (clic.style.backgroundColor != 'white'){
@@ -381,10 +439,20 @@
             clic.style.borderRadius = "10px";
           }
           
-          localStorage.setItem("events", llista)
+          var llistagran = localStorage.getItem("events")
+          if (llistagran!=null){
+            llistagran += llista + '/'
+            localStorage.setItem("events", llistagran)
+          }
+          else{
+            localStorage.setItem("events", llista + '/')
+          }
 
-          prova = localStorage.getItem("events").split(",")
-          console.log(prova[0])
+          var llistag = localStorage.getItem("events")
+          llistag = llistag.split('/')
+          llistap = llistag[0]
+          llistap = llistap.split(',')
+          console.log(llistag)
           $('#exampleModal').modal('hide');}
 
           else{
@@ -392,14 +460,89 @@
           }
 
         })
+    
+    var resetcal = document.getElementById("nom");
+    resetcal.addEventListener('click', function(){
+      now = new Date();
+      now = now.toLocaleDateString();
+      now = now.split("/");
+      mes();
+      carregaEvents();
+    })
+
+
+    var borraevents = document.getElementById("borrarevents");
+    borraevents.addEventListener('click', function(){
+      localStorage.setItem("events", '')
+    })
+    function carregaEvents(){
+
+      var escriureventi = document.getElementById("eventos");
+      var meset = document.getElementById("nom").textContent;
+      var anyet = document.getElementById("any").textContent;
+      var rebut = localStorage.getItem("events")
+      rebut = rebut.split('/')
+
+      var i = 0
+      while(i<rebut.length - 1){
+        proximevent = rebut[i]
+      proximevent = proximevent.split(',')
+      
+      escriureventi.innerHTML = 'Dia: '+proximevent[0]
+
+      var mes = proximevent[1]
+      var any = proximevent[2]
+
+      var llistamesos = ["Gener", "Febrer", "Març", "Abril", "Maig", "Juny", "Juliol", "Agost", "Setembre", "Octubre", "Novembre", "Desembre"]
+      var dmes = llistamesos.indexOf(meset)
+
+      if (mes == dmes && any == anyet){
+      var pevent = document.getElementById('c'+(window.totaldeldiadavui + parseInt(proximevent[0]) -1));
+      console.log('c'+(window.totaldeldiadavui + parseInt(proximevent[0])))
+      pevent.style.background = 'linear-gradient(to right, transparent 75%, '+ proximevent[7] + ' 25%)'
+      pevent.style.borderRadius = "10px";}
+      i = i + 1
+      }
+    }
+
+
+    var eventsclic = document.getElementById("eventsclic");
+    eventsclic.addEventListener('click', function(){
+      var escriurevent = document.getElementById("eventos");
+      var llistag = localStorage.getItem("events")
+      llistag = llistag.split('/')
+      llista = llistag[0]
+      llista = llista.split(',')
+      escriurevent.innerHTML = 'Dia: '+llista[0]
+    });
+
+    window.onload = function(){
+      var escriureventi = document.getElementById("eventos");
+
+      var rebut = localStorage.getItem("events")
+      rebut = rebut.split('/')
+
+      var i = 0
+      while(i<rebut.length - 1){
+        proximevent = rebut[i]
+      proximevent = proximevent.split(',')
+      
+      escriureventi.innerHTML = 'Dia: '+proximevent[0]
+
+      var pevent = document.getElementById('c'+(window.totaldeldiadavui + parseInt(proximevent[0]) -1));
+      console.log('c'+(window.totaldeldiadavui + parseInt(proximevent[0])))
+      pevent.style.background = 'linear-gradient(to right, transparent 75%, '+ proximevent[7] + ' 25%)'
+      pevent.style.borderRadius = "10px";
+      i = i + 1
+      }
+      
+    }
             
         
             
 
 
-    function loadEvent(a){
-
-    }
+    
 
 
     
